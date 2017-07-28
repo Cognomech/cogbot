@@ -21,7 +21,7 @@ fs.readdir("./commands/", (err, files) => {
   }
   console.log("");
 
-  jsFiles.forEach((file, i) => {
+  jsFiles.forEach((file, i) => { // Adds each command to the collection for later recall
     const fileMod = require(`./commands/${file}`); // Gets the file module
     client.commands.set(fileMod.properties.name, fileMod); // Pairs command name with the module
     console.log(`${i + 1}: ${file} loaded.`);
