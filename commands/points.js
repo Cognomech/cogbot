@@ -39,7 +39,7 @@ module.exports.run = (client, message, args) => {
       });
       collector.on("collect", () => {
       });
-      collector.on("end", () => console.log("Ended"));
+      collector.on("end", () => console.log("Endedd"));
     }
   });
 
