@@ -5,24 +5,25 @@ module.exports.run = (client, message, args) => {
     message.channel.send("You do not have permission to make changes to clan points.");
     return;
   }
-  if (args.length !== 4) { // Args number check
-    message.channel.send(`Unexpected number of arguments found: expected 4, found ${args.length}`);
-    return;
-  }
-  if (isNaN(args[2])) { // Points arg type check
-    message.channel.send("Expected number for third argument.");
-    return;
-  }
-  if (args[2] < 0) { // Negative number check
-    message.channel.send("Use \"!points remove\" to remove points.");
-    return;
-  }
-  if (args[2] === "0") { // Zero check
-    message.channel.send("You cannot add 0 points.");
-    return;
-  }
 
   if (args[0] === "add") {
+    if (args.length !== 4) { // Args number check
+      message.channel.send(`Unexpected number of arguments found: expected 4, found ${args.length}`);
+      return;
+    }
+    if (isNaN(args[2])) { // Points arg type check
+      message.channel.send("Expected number for third argument.");
+      return;
+    }
+    if (args[2] < 0) { // Negative number check
+      message.channel.send("Use \"!points remove\" to remove points.");
+      return;
+    }
+    if (args[2] === "0") { // Zero check
+      message.channel.send("You cannot add 0 points.");
+      return;
+    }
+
     const db = new sql.Database("./databases/PointsDB", (err) => { // Open database connection
       if (err) {
         console.log(err);
@@ -53,20 +54,37 @@ module.exports.run = (client, message, args) => {
             });
 
             collector.on("end", (collected, reason) => { // Reaction detection finished
+              botMessage.clearReactions();
               const reaction = collected.first();
               if (reason === "time" || reaction.emoji.name === "❎") { // User took too long to respond or said no tracking - we're done here!
-                botMessage.clearReactions();
               } else { // User wants to begin tracking
                 db.run(`INSERT INTO users (name, points) VALUES ("${args[1]}", ${args[2]})`, [], (err4) => { // Add user and points
                   if (err4) {
                     console.log(err2);
+                    return;
                   }
 
-                  message.channel.send(`${args[1]} is now being tracked and has been awarded ${args[2]} points.`);
-                  db.close((err5) => { // Close database connection
-                    if (err5) {
-                      console.log(err5);
+                  db.run(`CREATE TABLE IF NOT EXISTS ${args[1]} (time text PRIMARY KEY, pointschange integer, log text)`, [], (err6) => {
+                    if (err) {
+                      console.log(err6);
+                      return;
                     }
+
+                    const dateObj = new Date();
+                    const date = dateObj.toUTCString();
+
+                    db.run(`INSERT INTO ${args[1]} (time, pointschange, log) VALUES ("${date}", ${args[2]}, "${args[3]}")`, [], (err1) => {
+                      if (err1) {
+                        console.log(err1);
+                      }
+                      message.channel.send(`${args[1]} is now being tracked and has been awarded ${args[2]} points for: ${args[3]}`);
+
+                      db.close((err5) => { // Close database connection
+                        if (err5) {
+                          console.log(err5);
+                        }
+                      });
+                    });
                   });
                 });
               }
@@ -83,12 +101,21 @@ module.exports.run = (client, message, args) => {
                   console.log(err5);
                 }
 
-                message.channel.send(`${args[1]} now has ${newpoints} points.`);
+                const dateObj = new Date();
+                const date = dateObj.toUTCString();
 
-                db.close((err6) => {
-                  if (err6) {
-                    console.log(err6);
+                db.run(`INSERT INTO ${args[1]} (time, pointschange, log) VALUES ("${date}", ${args[2]}, "${args[3]}")`, [], (err1) => {
+                  if (err1) {
+                    console.log(err1);
                   }
+
+                  message.channel.send(`${args[1]} now has ${newpoints} points after being awarded ${args[2]} for: ${args[3]}`);
+
+                  db.close((err6) => {
+                    if (err6) {
+                      console.log(err6);
+                    }
+                  });
                 });
               });
             });
