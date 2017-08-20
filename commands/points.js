@@ -5,8 +5,8 @@ module.exports.run = (client, message, args) => {
     message.channel.send("You do not have permission to make changes to clan points.");
     return;
   }
-  if (args.length !== 3) { // Args number check
-    message.channel.send(`Unexpected number of arguments found: expected 3, found ${args.length}`);
+  if (args.length !== 4) { // Args number check
+    message.channel.send(`Unexpected number of arguments found: expected 4, found ${args.length}`);
     return;
   }
   if (isNaN(args[2])) { // Points arg type check
@@ -25,7 +25,7 @@ module.exports.run = (client, message, args) => {
   if (args[0] === "add") {
     const db = new sql.Database("./databases/PointsDB", (err) => { // Open database connection
       if (err) {
-        console.log(err.message);
+        console.log(err);
         return;
       }
 
@@ -37,7 +37,7 @@ module.exports.run = (client, message, args) => {
 
         db.get(`SELECT name name FROM users WHERE name = "${args[1]}"`, [], async (err3, result) => { // Check user table for user
           if (err3) {
-            console.log(err3.message);
+            console.log(err3);
             return;
           }
 
@@ -59,13 +59,13 @@ module.exports.run = (client, message, args) => {
               } else { // User wants to begin tracking
                 db.run(`INSERT INTO users (name, points) VALUES ("${args[1]}", ${args[2]})`, [], (err4) => { // Add user and points
                   if (err4) {
-                    console.log(err2.message);
+                    console.log(err2);
                   }
 
                   message.channel.send(`${args[1]} is now being tracked and has been awarded ${args[2]} points.`);
                   db.close((err5) => { // Close database connection
                     if (err5) {
-                      console.log(err5.message);
+                      console.log(err5);
                     }
                   });
                 });
@@ -74,16 +74,22 @@ module.exports.run = (client, message, args) => {
           } else { // User has been found in table
             db.get(`SELECT points points FROM users WHERE name = "${args[1]}"`, [], (err4, row) => {
               if (err4) {
-                console.log(err4.message);
+                console.log(err4);
               }
 
               const newpoints = +row.points + +args[2];
               db.run(`UPDATE users SET points = ${newpoints} WHERE name = "${args[1]}"`, [], (err5) => {
                 if (err5) {
-                  console.log(err5.message);
+                  console.log(err5);
                 }
 
                 message.channel.send(`${args[1]} now has ${newpoints} points.`);
+
+                db.close((err6) => {
+                  if (err6) {
+                    console.log(err6);
+                  }
+                });
               });
             });
           }
