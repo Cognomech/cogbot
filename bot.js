@@ -51,6 +51,11 @@ client.on("message", async (message) => {
   const messageArray = message.content.match(/[^\s"']+|"([^"]*)"/gm); // Splits message by whitespace, args in quotes fully preserved
   const command = messageArray[0]; // Actual command is first string
   const args = messageArray.slice(1); // Command arguments are any following strings
+  args.forEach((arg, index) => { // Remove quote marks as needed
+    if (arg.charAt(0) === "\"") {
+      args[index] = arg.slice(1, -1);
+    }
+  });
   const commandFile = client.commands.get(command.slice(config.prefix.length)); // Grabs command module from collection
   if (commandFile) commandFile.run(client, message, args); // If command module exists, run it
 });
