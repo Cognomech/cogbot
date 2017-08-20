@@ -48,10 +48,9 @@ client.on("message", async (message) => {
   if (message.author.bot) return; // Ignores messages by other bots, prevents loops
   if (!message.content.startsWith(config.prefix)) return; // Ignores messages without proper prefix
 
-  const messageArray = message.content.split(/\s+/g); // Splits message by whitespace
+  const messageArray = message.content.match(/[^\s"']+|"([^"]*)"/gm); // Splits message by whitespace, args in quotes fully preserved
   const command = messageArray[0]; // Actual command is first string
   const args = messageArray.slice(1); // Command arguments are any following strings
-
   const commandFile = client.commands.get(command.slice(config.prefix.length)); // Grabs command module from collection
   if (commandFile) commandFile.run(client, message, args); // If command module exists, run it
 });
