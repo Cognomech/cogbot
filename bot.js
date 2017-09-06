@@ -49,7 +49,7 @@ client.on("message", async (message) => {
   if (!message.content.startsWith(config.prefix)) return; // Ignores messages without proper prefix
 
   const messageArray = message.content.match(/[^\s"']+|"([^"]*)"/gm); // Splits message by whitespace, args in quotes fully preserved
-  const command = messageArray[0]; // Actual command is first string
+  const command = messageArray[0].toLowerCase; // Actual command is first string
   const args = messageArray.slice(1); // Command arguments are any following strings
   args.forEach((arg, index) => { // Remove quote marks as needed
     if (arg.charAt(0) === "\"") {
