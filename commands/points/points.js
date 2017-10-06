@@ -22,11 +22,3 @@ async (client, message, args) => {
     }
   }
 });
-
-/* TODO: conditions to consider:
-  permissions for command
-  is user tracked
-
-*/
-
-// TODO: change points command

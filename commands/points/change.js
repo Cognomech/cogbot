@@ -70,5 +70,3 @@ module.exports = new cmdUtils.HelperCommand(
     await db.close();
   }
 );
-
-// TODO: this command.

@@ -25,5 +25,3 @@ module.exports = (client, message) => {
   const cmd = cmdRegistry.get(cmdName);
   cmd.run(client, message, args);
 };
-
-// TODO: More specific permissions failed messages
