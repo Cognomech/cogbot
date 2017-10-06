@@ -2,20 +2,22 @@
   "name": "cogbot",
   "version": "1.0.0",
   "description": "A Discord Bot by Cognomech",
-  "main": "bot.js",
+  "main": "main.js",
   "dependencies": {
-    "discord.js": "^11.1.0",
-    "eslint-plugin-import": "^2.7.0",
-    "sqlite3": "^3.1.9"
+    "discord.js": "^11.2.1",
+    "sqlite": "^2.8.0",
+    "sqlite3": "^3.1.13"
   },
   "devDependencies": {
-    "eslint": "^4.3.0",
-    "eslint-config-airbnb-base": "^11.3.1",
-    "eslint-plugin-import": "^2.7.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint-config-airbnb": "^15.1.0"
   },
   "author": "Cognomech",
-  "license": "ISC"
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/Cognomech/cogbot/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cognomech/cogbot.git"
+  }
 }

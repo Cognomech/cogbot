@@ -1,7 +1,13 @@
-module.exports.run = () => {
-  console.log("!pong");
-};
+const cmdUtils = require("../cogLib/cmdUtils.js");
 
-module.exports.properties = {
-  name: "ping",
-};
+module.exports = new cmdUtils.Command(
+  {
+    name: "ping",
+  },
+
+  {},
+
+  (client, message) => {
+    message.channel.send(`Pong: ${new Date().getTime() - message.createdTimestamp} ms`);
+  }
+);
