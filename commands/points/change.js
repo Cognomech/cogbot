@@ -5,8 +5,8 @@ const clientUtils = require("../../cogLib/clientUtils.js");
 async function addLog(db, username, points, reason) {
   const date = new Date().toUTCString();
 
-  await db.run(`CREATE TABLE IF NOT EXISTS ${username} (time text PRIMARY KEY, pointschange integer, log text)`);
-  await db.run(`INSERT INTO ${username} (time, pointschange, log) VALUES ("${date}", ${points}, "${reason}")`);
+  await db.run(`CREATE TABLE IF NOT EXISTS [${username}] (time text PRIMARY KEY, pointschange integer, log text)`);
+  await db.run(`INSERT INTO [${username}] (time, pointschange, log) VALUES ("${date}", ${points}, "${reason}")`);
 }
 
 module.exports = new cmdUtils.HelperCommand(
