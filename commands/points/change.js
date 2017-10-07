@@ -26,7 +26,7 @@ module.exports = new cmdUtils.HelperCommand(
     const reason = args[2];
 
     if (args.length !== 3) {
-      message.channel.send('Expected format: !points change [name] [value] ["reason"]');
+      message.channel.send("Expected format: !points change [name] [value] [reason]");
       return;
     }
     if (Number.isNaN(value)) {
