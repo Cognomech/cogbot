@@ -3,7 +3,6 @@ const sqlite = require("sqlite");
 const clientUtils = require("../../cogLib/clientUtils.js");
 
 async function addLog(db, username, points, reason) {
-  console.log(reason);
   const date = new Date().toUTCString();
 
   await db.run(`CREATE TABLE IF NOT EXISTS ${username} (time text PRIMARY KEY, pointschange integer, log text)`);
