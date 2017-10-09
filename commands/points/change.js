@@ -3,10 +3,11 @@ const sqlite = require("sqlite");
 const clientUtils = require("../../cogLib/clientUtils.js");
 
 async function addLog(db, username, points, reason) {
-  const date = new Date().toUTCString();
+  const epochTime = Date.now();
+  const readableTime = new Date().toUTCString();
 
-  await db.run(`CREATE TABLE IF NOT EXISTS [${username}] (time text PRIMARY KEY, pointschange integer, log text)`);
-  await db.run(`INSERT INTO [${username}] (time, pointschange, log) VALUES ("${date}", ${points}, "${reason}")`);
+  await db.run(`CREATE TABLE IF NOT EXISTS [${username}] (epochTime integer PRIMARY KEY, readableTime text, pointsChange integer, log text)`);
+  await db.run(`INSERT INTO [${username}] (epochTime, readableTime, pointsChange, log) VALUES (${epochTime}, "${readableTime}", ${points}, "${reason}")`);
 }
 
 module.exports = new cmdUtils.HelperCommand(
