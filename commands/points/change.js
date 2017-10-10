@@ -49,7 +49,8 @@ module.exports = new cmdUtils.HelperCommand(
         return;
       }
 
-      const requestTracking = await clientUtils.reactYesNoMenu(client, message, `${username} is not currently being tracked. Would you like to begin tracking?`);
+      const clientMessage = await message.channel.send(`${username} is not currently being tracked. Would you like to begin tracking?`);
+      const requestTracking = await clientUtils.reactYesNoMenu(client, message, clientMessage);
       if (requestTracking) {
         await db.run(`INSERT INTO main (name, points) VALUES ("${username}", ${value})`);
         await addLog(db, username, value, reason);
