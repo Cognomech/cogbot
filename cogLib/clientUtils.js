@@ -1,23 +1,27 @@
 const discord = require("discord.js");
 
-module.exports.reactYesNoMenu = (client, userMessage, clientMessageText, timeout = 30000) => new Promise(async (resolve) => {
-  const clientMessage = await userMessage.channel.send(clientMessageText);
-  await clientMessage.react("✅");
-  await clientMessage.react("❎");
-
-  const allCollector = clientMessage.createReactionCollector(() => true);
-  allCollector.on("collect", (reaction) => {
+function reactionFilter(clientMessage, userMessage, allowedReactions) {
+  const collector = clientMessage.createReactionCollector(() => true);
+  collector.on("collect", (reaction) => {
     reaction.users.forEach((user) => {
       if (user instanceof discord.ClientUser) {
         return;
       }
-      if ((user === userMessage.author) && (reaction.emoji.name === "✅" || reaction.emoji.name === "❎")) {
+      if ((user === userMessage.author) && (allowedReactions.includes(reaction.emoji.name))) {
         return;
       }
       reaction.remove(user);
     });
   });
+  return collector;
+}
 
+module.exports.reactYesNoMenu = (client, userMessage, clientMessageText, timeout = 30000) => new Promise(async (resolve) => {
+  const clientMessage = await userMessage.channel.send(clientMessageText);
+  await clientMessage.react("✅");
+  await clientMessage.react("❎");
+
+  const filterCollector = reactionFilter(clientMessage, userMessage, ["✅", "❎"]);
   const yesNocollector = clientMessage.createReactionCollector(
     (reaction, user) => ((user === userMessage.author) && (reaction.emoji.name === "✅" || reaction.emoji.name === "❎")),
     {
@@ -28,7 +32,7 @@ module.exports.reactYesNoMenu = (client, userMessage, clientMessageText, timeout
   yesNocollector.on("end", (collected, reason) => {
     const reaction = collected.first();
     clientMessage.clearReactions();
-    allCollector.stop();
+    filterCollector.stop();
     if (reason === "time" || reaction.emoji.name === "❎") {
       resolve(false);
     }
