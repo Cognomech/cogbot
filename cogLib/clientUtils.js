@@ -16,8 +16,7 @@ function reactionFilter(clientMessage, userMessage, allowedReactions) {
   return collector;
 }
 
-module.exports.reactYesNoMenu = (client, userMessage, clientMessageText, timeout = 30000) => new Promise(async (resolve) => {
-  const clientMessage = await userMessage.channel.send(clientMessageText);
+module.exports.reactYesNoMenu = (client, userMessage, clientMessage, timeout = 30000) => new Promise(async (resolve) => {
   await clientMessage.react("✅");
   await clientMessage.react("❎");
 
