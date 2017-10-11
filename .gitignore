@@ -5,3 +5,5 @@ nodemon.json
 start.bat
 databases
 launch.json
+commands/test.js
+
