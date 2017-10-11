@@ -28,13 +28,61 @@ module.exports.reactYesNoMenu = (client, userMessage, clientMessage, timeout = 3
       time: timeout,
     }
   );
-  yesNocollector.on("end", (collected, reason) => {
+  yesNocollector.on("end", async (collected, reason) => {
     const reaction = collected.first();
-    clientMessage.clearReactions();
+    await clientMessage.clearReactions();
     filterCollector.stop();
     if (reason === "time" || reaction.emoji.name === "❎") {
       resolve(false);
+      return;
     }
     resolve(true);
   });
+});
+
+
+module.exports.reactLeftRightEndMenu = (client, userMessage, clientMessage, leftFunc, rightFunc, timeout = 300000) => new Promise(async (resolve) => {
+  const emojis = ["⬅", "🗑", "➡"];
+  await clientMessage.react("⬅");
+  await clientMessage.react("🗑");
+  await clientMessage.react("➡");
+
+  const filterCollector = reactionFilter(clientMessage, userMessage, emojis);
+  let responseCollector;
+
+  async function collectorFunc(reaction) {
+    if (reaction !== undefined) {
+      if (reaction.emoji.name === "🗑") {
+        responseCollector.stop("Bin emoji clicked");
+        return;
+      }
+      if (reaction.emoji.name === "⬅") {
+        await leftFunc();
+      }
+      if (reaction.emoji.name === "➡") {
+        await rightFunc();
+      }
+      await reaction.remove(userMessage.author);
+      responseCollector.stop();
+    }
+
+    responseCollector = clientMessage.createReactionCollector(
+      (collected, user) => ((user === userMessage.author) && (emojis.includes(collected.emoji.name))),
+      {
+        time: timeout,
+      }
+    );
+    responseCollector.on("collect", (response) => {
+      collectorFunc(response);
+    });
+    responseCollector.on("end", async (collected, reason) => {
+      if (!(reason === "user")) {
+        await clientMessage.clearReactions();
+        filterCollector.stop();
+        resolve();
+      }
+    });
+  }
+
+  collectorFunc();
 });
