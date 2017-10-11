@@ -2,12 +2,12 @@ const cmdUtils = require("../../cogLib/cmdUtils.js");
 const sqlite = require("sqlite");
 const clientUtils = require("../../cogLib/clientUtils.js");
 
-async function addLog(db, username, points, reason) {
+async function addLog(db, username, points, reason, author) {
   const epochTime = Date.now();
   const readableTime = new Date().toUTCString();
 
-  await db.run(`CREATE TABLE IF NOT EXISTS [${username}] (epochTime integer PRIMARY KEY, readableTime text, pointsChange integer, log text)`);
-  await db.run(`INSERT INTO [${username}] (epochTime, readableTime, pointsChange, log) VALUES (${epochTime}, "${readableTime}", ${points}, "${reason}")`);
+  await db.run(`CREATE TABLE IF NOT EXISTS [${username}] (epochTime integer PRIMARY KEY, readableTime text, pointsChange integer, log text, author text)`);
+  await db.run(`INSERT INTO [${username}] (epochTime, readableTime, pointsChange, log, author) VALUES (${epochTime}, "${readableTime}", ${points}, "${reason}", "${author}")`);
 }
 
 module.exports = new cmdUtils.HelperCommand(
@@ -38,6 +38,10 @@ module.exports = new cmdUtils.HelperCommand(
       message.channel.send("You cannot make a change of zero points.");
       return;
     }
+    if (reason.length > 200) {
+      message.channel.send("Reason cannot exceed 200 characters.");
+      return;
+    }
 
     const db = await sqlite.open("databases/points.db");
     await db.run("CREATE TABLE IF NOT EXISTS main(name text PRIMARY KEY, points integer CHECK (points >= 0))");
@@ -53,7 +57,7 @@ module.exports = new cmdUtils.HelperCommand(
       const requestTracking = await clientUtils.reactYesNoMenu(client, message, clientMessage);
       if (requestTracking) {
         await db.run(`INSERT INTO main (name, points) VALUES ("${username}", ${value})`);
-        await addLog(db, username, value, reason);
+        await addLog(db, username, value, reason, message.author.username);
         await message.channel.send(`${username} is now being tracked and had been awarded ${value} points for: ${reason}`);
       }
     } else {
@@ -65,7 +69,7 @@ module.exports = new cmdUtils.HelperCommand(
       }
 
       await db.run(`UPDATE main SET points = ${newPoints} WHERE name = "${username}"`);
-      await addLog(db, username, value, reason);
+      await addLog(db, username, value, reason, message.author.username);
       await message.channel.send(`${username} now has ${newPoints} points after a change of ${value} for: ${reason}`);
     }
     await db.close();
