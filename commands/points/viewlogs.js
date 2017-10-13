@@ -15,7 +15,12 @@ module.exports = new cmdUtils.HelperCommand(
   (async (client, message, args) => {
     const db = await sqlite.open("databases/points.db");
     const username = args[0];
-    const totalRows = (await db.get(`SELECT count(*) FROM "${username}"`))["count(*)"];
+    let totalRows;
+    try {
+      totalRows = (await db.get(`SELECT count(*) FROM "${username}"`))["count(*)"];
+    } catch (error) {
+      message.channel.send(`Could not find point change logs for ${username}`);
+    }
     const rowsPerPage = 10;
     let pageNumber = 0;
 
