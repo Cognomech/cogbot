@@ -26,7 +26,7 @@ module.exports = new cmdUtils.HelperCommand(
 
     async function grabLogs() {
       const logArray = await db.all(`
-        SELECT readableTime readableTime, pointsChange pointsChange, log log 
+        SELECT readableTime readableTime, pointsChange pointsChange, log log, author author 
         FROM "${username}"
         ORDER BY epochTime DESC
         LIMIT ${rowsPerPage}
@@ -36,7 +36,7 @@ module.exports = new cmdUtils.HelperCommand(
       let logString = "";
       for (let i = 0; i < logArray.length; i += 1) {
         const row = logArray[i];
-        logString += `[${row.readableTime}]: ${row.pointsChange} for ${row.log}\n`;
+        logString += `[${row.author} at ${row.readableTime}]: ${row.pointsChange} for ${row.log}\n\n`;
       }
       logString = `\`\`\`${logString}\`\`\``;
       return logString;
