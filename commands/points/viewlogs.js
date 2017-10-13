@@ -16,8 +16,10 @@ module.exports = new cmdUtils.HelperCommand(
     const db = await sqlite.open("databases/points.db");
     const username = args[0];
     let totalRows;
+    let totalPoints;
     try {
       totalRows = (await db.get(`SELECT count(*) FROM "${username}"`))["count(*)"];
+      totalPoints = (await db.get(`SELECT points, points FROM main WHERE name = "${username}"`)).points;
     } catch (error) {
       message.channel.send(`Could not find point change logs for ${username}`);
     }
@@ -46,8 +48,8 @@ module.exports = new cmdUtils.HelperCommand(
         .setColor(0xaf00ff)
         .setThumbnail(`http://services.runescape.com/m=avatar-rs/a=13/${username}/chat.png`)
         .setTimestamp()
-        .setTitle(`__${username}'s Clan Points Logs__`)
-        .setDescription(await grabLogs())
+        .setTitle(`__${username}'s Clan Points Logs__ - Total: ${totalPoints} Points`)
+        .setDescription(`${await grabLogs()}`)
         .setFooter(`
           Showing ${(10 * pageNumber) + 1}-
           ${(pageNumber + 1) * 10 < totalRows ? (10 * pageNumber) + 10 : totalRows} of ${totalRows} rows
