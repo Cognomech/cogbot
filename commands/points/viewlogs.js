@@ -15,6 +15,7 @@ module.exports = new cmdUtils.HelperCommand(
   (async (client, message, args) => {
     const db = await sqlite.open("databases/points.db");
     const username = args[0];
+    const URLName = args[0].replace(" ", "_");
     let totalRows;
     let totalPoints;
     try {
@@ -44,9 +45,9 @@ module.exports = new cmdUtils.HelperCommand(
       return logString;
     }
     async function generateEmbed() {
-      return new discord.RichEmbed()
+      return new discord.MessageEmbed()
         .setColor(0xaf00ff)
-        .setThumbnail(`http://services.runescape.com/m=avatar-rs/a=13/${username}/chat.png`)
+        .setThumbnail(`http://services.runescape.com/m=avatar-rs/a=13/${URLName}/chat.png`)
         .setTimestamp()
         .setTitle(`__${username}'s Clan Points Logs__ - Total: ${totalPoints} Points`)
         .setDescription(`${await grabLogs()}`)
