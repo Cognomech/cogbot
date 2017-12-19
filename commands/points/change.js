@@ -1,6 +1,7 @@
 const cmdUtils = require("../../cogLib/cmdUtils.js");
 const sqlite = require("sqlite");
 const clientUtils = require("../../cogLib/clientUtils.js");
+const leaderboard = require("../../cogLib/leaderboard.js");
 
 async function addLog(db, username, points, reason, author) {
   const epochTime = Date.now();
@@ -73,5 +74,7 @@ module.exports = new cmdUtils.HelperCommand(
       await message.channel.send(`${username} now has ${newPoints} points after a change of ${value} for: ${reason}`);
     }
     await db.close();
+
+    leaderboard.update(client.guilds.get("277869752867749888"), "databases/points.db");
   }
 );
