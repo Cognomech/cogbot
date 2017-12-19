@@ -75,6 +75,6 @@ module.exports = new cmdUtils.HelperCommand(
     }
     await db.close();
 
-    leaderboard.update(client.guilds.get("277869752867749888"), "databases/points.db");
+    await leaderboard.update(client.guilds.get("277869752867749888"), "databases/points.db");
   }
 );

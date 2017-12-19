@@ -43,6 +43,6 @@ module.exports = new cmdUtils.HelperCommand(
     await db.close();
     message.channel.send(`${oldName} successfully renamed to ${newName}`);
 
-    leaderboard.update(client.guilds.get("277869752867749888"), "databases/points.db");
+    await leaderboard.update(client.guilds.get("277869752867749888"), "databases/points.db");
   }
 );
