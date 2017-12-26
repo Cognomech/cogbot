@@ -1,7 +1,7 @@
 const discord = require("discord.js");
 const sqlite = require("sqlite");
 
-module.exports.update = async function update(guild, database) {
+module.exports.updateLB = async function updateLB(guild, database) {
   const db = await sqlite.open(database);
   let position = 1;
   let lbChannel;
