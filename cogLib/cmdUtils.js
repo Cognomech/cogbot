@@ -100,25 +100,28 @@ module.exports.CommandHandler = class CommandHandler {
     try {
       const cmd = require(filePath);
       if (cmd instanceof module.exports.HelperCommand) {
-        throw new Error(`Skipped over HelperCommand "${cmd.properties.name}", child of Command "${cmd.parent.properties.name}"`);
+        console.log(`Skipped over HelperCommand "${cmd.properties.name}", child of Command "${cmd.parent.properties.name}"`);
+        return;
       }
       if (!(cmd instanceof module.exports.Command)) {
-        throw new Error(`Attempted to register ${filePath} as a command, but it is not exporting a Command.`);
+        console.log(`Attempted to register ${filePath} as a command, but it is not exporting a Command.`);
+        return;
       }
       if (this.cmdRegistry.has(cmd.properties.name)) {
-        throw new Error(`"${cmd.properties.name}" is already registered as a command. Duplicate found in ${filePath}`);
+        console.log(`"${cmd.properties.name}" is already registered as a command. Duplicate found in ${filePath}`);
+        return;
       }
 
       this.cmdRegistry.set(cmd.properties.name, cmd);
-      console.log(`${this.cmdRegistry.size}: "${cmd.properties.name}" has been registered into the command registry.`);
+      console.log(`"${cmd.properties.name}" has been registered into the command registry.`);
     } catch (error) {
-      console.log(error.message);
+      console.log(`\nError loading ${filePath}: ${error.message}\n`);
     }
   }
 
   async registerCmdsFromDir(dir = this.absCmdDir) {
     const files = await fileUtils.asyncRecursiveReaddir(dir);
-    console.log(`Attempting to load ${files.length} command files.`);
+    console.log(`Attempting to load ${files.length} command files:`);
     files.forEach(file => this.registerNewCommand(file));
   }
 };
