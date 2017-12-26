@@ -1,1 +1,1 @@
-module.exports = () => console.log("CogBot has successfully logged in.");
+module.exports = () => console.log("\nCogBot has successfully logged in.");
