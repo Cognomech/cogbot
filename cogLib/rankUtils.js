@@ -58,6 +58,14 @@ module.exports.updateRank = async function updateRank(guild, database) {
       }
     }
 
+    db.run(`
+      CREATE TABLE IF NOT EXISTS
+      rsnames (
+        id text PRIMARY KEY,
+        rsname text UNIQUE
+      )
+    `);
+
     const idObj = await db.get(`
       SELECT id, id
       FROM rsnames
