@@ -30,7 +30,7 @@ async (client, message, args) => {
     id = discordArg;
   }
   discordName = albionGuild.members.get(id).nickname;
-  if (discordName === undefined) {
+  if (discordName === undefined || discordName === null) {
     discordName = albionGuild.members.get(id).user.username;
   }
 
@@ -63,7 +63,7 @@ async (client, message, args) => {
         currentRSName = row.rsname;
       } else {
         conflictingDiscordName = albionGuild.members.get(row.id).nickname;
-        if (conflictingDiscordName === undefined) {
+        if (conflictingDiscordName === undefined || discordName === null) {
           conflictingDiscordName = albionGuild.members.get(row.id).user.username;
         }
       }
@@ -79,9 +79,9 @@ async (client, message, args) => {
       const requestOverwrite = await clientUtils.reactYesNoMenu(client, message, clientMessage);
       if (requestOverwrite) {
         db.run(`
-        UPDATE rsnames
-        SET rsname = "${rsName}"
-        WHERE id = "${id}"
+          UPDATE rsnames
+          SET rsname = "${rsName}"
+          WHERE id = "${id}"
       `);
         message.channel.send(`${discordName} has successfully had their RuneScape name changed from ${data[0].rsname} to ${rsName}.`);
       }
@@ -94,6 +94,16 @@ async (client, message, args) => {
       conflictingDiscordName = albionGuild.members.get(data[0].id).user.username;
     }
     message.channel.send(`The RuneScape name ${rsName} is currently in use by ${conflictingDiscordName}.`);
+  }
+
+  if (data.length === 0) {
+    db.run(`
+      INSERT INTO rsnames
+      (id, rsname)
+      VALUES
+      ("${id}", "${rsName}")
+    `);
+    message.channel.send(`${discordName} has successfully been assigned the RuneScape name ${rsName}.`);
   }
 
   db.close();
