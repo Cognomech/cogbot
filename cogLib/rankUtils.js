@@ -1,5 +1,78 @@
 const discord = require("discord.js");
 const sqlite = require("sqlite");
+const mathsUtils = require("./mathsUtils");
+
+module.exports.update = async function update(guild, database) {
+  await module.exports.updateRank(guild, database);
+  await module.exports.updateLB(guild, database);
+};
+
+module.exports.updateRank = async function updateRank(guild, database) {
+  const db = await sqlite.open(database);
+  const rankPercents = [
+    [20, "277876491843403797"],
+    [40, "300068394772856834"],
+    [60, "303135836252405771"],
+    [80, "310213317811503104"],
+    [100, "318732816101801984"]
+  ];
+  const pointPercentile = [];
+
+  const namePointData = await db.all(`
+    SELECT 
+    name name,
+    points points
+    FROM main
+  `);
+  const pointsArray = namePointData.map(pointObj => pointObj.points);
+
+  rankPercents.forEach((val, i) => {
+    const percent = val[0];
+    if (percent === 100) {
+      pointPercentile[i] = Math.max(...pointsArray);
+    } else {
+      pointPercentile[i] = mathsUtils.percentile(pointsArray, percent);
+    }
+  });
+
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS
+    ranks (
+      name text PRIMARY KEY,
+      rankID text
+    )
+  `);
+
+  await Promise.all(namePointData.map(async (row) => {
+    let rank;
+    for (let i = 0; i < pointPercentile.length; i += 1) {
+      if (!(row.points >= pointPercentile[i]) || i === pointPercentile.length - 1) {
+        rank = rankPercents[i][1];
+        db.run(`
+          INSERT OR REPLACE INTO ranks
+          (name, rankID)
+          VALUES
+          ("${row.name}", "${rankPercents[i][1]}")
+        `);
+        break;
+      }
+    }
+
+    const idObj = await db.get(`
+      SELECT id, id
+      FROM rsnames
+      WHERE rsname = "${row.name}"
+    `);
+    if (idObj !== undefined) {
+      const id = idObj.id;
+      const guildMember = guild.members.get(id);
+      await Promise.all(rankPercents.map(async (val) => {
+        await guildMember.removeRole(val[1]);
+      }));
+      await guildMember.addRole(rank);
+    }
+  }));
+};
 
 module.exports.updateLB = async function updateLB(guild, database) {
   const db = await sqlite.open(database);

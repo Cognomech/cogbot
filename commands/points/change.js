@@ -75,6 +75,6 @@ module.exports = new cmdUtils.HelperCommand(
     }
     await db.close();
 
-    await rankUtils.updateLB(client.guilds.get("277869752867749888"), "databases/points.db");
+    await rankUtils.update(client.guilds.get("277869752867749888"), "databases/points.db");
   }
 );
