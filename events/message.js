@@ -10,12 +10,14 @@ module.exports = (client, message) => {
     return;
   }
 
+  const formattedMessage = message;
+  formattedMessage.content = formattedMessage.content.replace(/”/g, "\"");
   const args = [];
   const regEx = /"(.*?)"|(\S+)/g;
-  let match = regEx.exec(message.content);
+  let match = regEx.exec(formattedMessage.content);
   while (match) {
     args.push(match[1] ? match[1] : match[0]);
-    match = regEx.exec(message.content);
+    match = regEx.exec(formattedMessage.content);
   }
   const cmdName = args.shift().slice(1).toLowerCase();
 
@@ -23,5 +25,5 @@ module.exports = (client, message) => {
     return;
   }
   const cmd = cmdRegistry.get(cmdName);
-  cmd.run(client, message, args);
+  cmd.run(client, formattedMessage, args);
 };
