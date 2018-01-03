@@ -22,7 +22,7 @@ module.exports = new cmdUtils.HelperCommand(
       totalRows = (await db.get(`SELECT count(*) FROM "${username}"`))["count(*)"];
       totalPoints = (await db.get(`SELECT points, points FROM main WHERE name = "${username}"`)).points;
     } catch (error) {
-      message.channel.send(`Could not find point change logs for ${username}`);
+      message.channel.send(`Could not find point change logs for ${username}.`);
     }
     const rowsPerPage = 10;
     let pageNumber = 0;
