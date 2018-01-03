@@ -14,8 +14,6 @@ client.eventHandler = new eventUtils.EventHandler(client, `${__dirname}/events`)
     client.eventHandler.registerEventsFromDir()
   ]);
   await client.login(config.token);
-  if (!config.dev) {
-    await rankUtils.update(client.guilds.get("277869752867749888"), "databases/points.db");
-  }
+  await rankUtils.update(client.guilds.get("277869752867749888"), "databases/points.db");
 })();
 

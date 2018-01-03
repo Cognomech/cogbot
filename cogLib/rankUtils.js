@@ -1,10 +1,13 @@
 const discord = require("discord.js");
 const sqlite = require("sqlite");
 const mathsUtils = require("./mathsUtils");
+const config = require("../config.json");
 
 module.exports.update = async function update(guild, database) {
-  await module.exports.updateRank(guild, database);
-  await module.exports.updateLB(guild, database);
+  if (!config.dev) {
+    await module.exports.updateRank(guild, database);
+    await module.exports.updateLB(guild, database);
+  }
 };
 
 module.exports.updateRank = async function updateRank(guild, database) {
