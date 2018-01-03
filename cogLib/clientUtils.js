@@ -16,7 +16,14 @@ function reactionFilter(clientMessage, userMessage, allowedReactions) {
   return collector;
 }
 
-module.exports.reactYesNoMenu = (client, userMessage, clientMessage, timeout = 30000) => new Promise(async (resolve) => {
+module.exports.reactYesNoMenu = (client, userMessage, clientMessageArg, timeout = 30000) => new Promise(async (resolve) => {
+  let clientMessage;
+  if (typeof clientMessageArg === "string") {
+    clientMessage = await userMessage.channel.send(clientMessageArg);
+  } else {
+    clientMessage = clientMessageArg;
+  }
+
   await clientMessage.react("✅");
   await clientMessage.react("❎");
 
@@ -41,7 +48,14 @@ module.exports.reactYesNoMenu = (client, userMessage, clientMessage, timeout = 3
 });
 
 
-module.exports.reactLeftRightEndMenu = (client, userMessage, clientMessage, leftFunc, rightFunc, timeout = 300000) => new Promise(async (resolve) => {
+module.exports.reactLeftRightEndMenu = (client, userMessage, clientMessageArg, leftFunc, rightFunc, timeout = 300000) => new Promise(async (resolve) => {
+  let clientMessage;
+  if (typeof clientMessageArg === "string") {
+    clientMessage = await userMessage.channel.send(clientMessageArg);
+  } else {
+    clientMessage = clientMessageArg;
+  }
+
   const emojis = ["⬅", "🗑", "➡"];
   await clientMessage.react("⬅");
   await clientMessage.react("🗑");
