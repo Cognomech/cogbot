@@ -1,4 +1,6 @@
 {
   "token": "BeepBoop",
-  "prefix": "!"
+  "prefix": "!",
+  "dev": false
+  
 }
