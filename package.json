@@ -5,10 +5,17 @@
   "main": "main.js",
   "dependencies": {
     "discord.js": "github:hydrabolt/discord.js",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "node-gyp": "^3.6.2",
+    "opusscript": "0.0.6",
+    "rebuild": "^0.1.2",
     "sqlite": "^2.8.0"
   },
   "devDependencies": {
-    "eslint-config-airbnb": "^15.1.0"
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
   },
   "author": "Cognomech",
   "license": "GPL-3.0+",
