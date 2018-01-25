@@ -21,6 +21,14 @@ module.exports.updateRank = async function updateRank(guild, database) {
   ];
   const pointPercentile = [];
 
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS 
+    main(
+      name text PRIMARY KEY, 
+      points integer CHECK (points >= 0)
+    )
+  `);
+
   const namePointData = await db.all(`
     SELECT 
     name name,
@@ -110,7 +118,9 @@ module.exports.updateLB = async function updateLB(guild, database) {
       position += 1;
     }
   );
+
   await db.close();
+  if (!lbNames) return;
 
   const lbEmbed = new discord.MessageEmbed()
     .setColor(0xaf00ff)
