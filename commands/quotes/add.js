@@ -38,7 +38,11 @@ module.exports = new cmdUtils.HelperCommand(
     let authorObj;
     if (authorName.length > 4) {
       try {
-        authorObj = await message.guild.members.fetch(authorName.slice(3, -1));
+        if (authorName.startsWith("<@!")) {
+          authorObj = await message.guild.members.get(authorName.slice(3, -1));
+        } else {
+          authorObj = await message.guild.members.get(authorName.slice(2, -1));
+        }
       } catch (error) {
         authorObj = undefined;
       }
