@@ -8,7 +8,7 @@ function bjTotal(deck) {
   const cardVals = deck.cards.map(card => card.value.slice(2, -2));
 
   function cardCount(soft) {
-    const cardValsCopy = cardVals;
+    const cardValsCopy = cardVals.slice(0);
     cardValsCopy.forEach((val, i) => {
       switch (val) {
         case "A":
