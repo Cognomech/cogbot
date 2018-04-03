@@ -7,6 +7,7 @@ const rankUtils = require("./cogLib/rankUtils.js");
 const client = new discord.Client();
 client.cmdHandler = new cmdUtils.CommandHandler(`${__dirname}/commands`);
 client.eventHandler = new eventUtils.EventHandler(client, `${__dirname}/events`);
+client.cache = {};
 
 (async () => {
   await Promise.all([
