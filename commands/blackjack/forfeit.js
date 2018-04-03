@@ -10,7 +10,7 @@ module.exports = new cmdUtils.HelperCommand(
 
   {},
 
-  async (client, message, args) => {
+  async (client, message) => {
     if (client.cache.bj === undefined) {
       client.cache.bj = [];
     }
